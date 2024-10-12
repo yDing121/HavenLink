@@ -6,17 +6,17 @@ Project python version: `3.11.9`
 
 Navigate to project root directory, then:
 
-Windows: `python -m venv HavenLink`
+Windows: `python -m venv venv`
 
-Unix: `python3 -m venv HavenLink`
+Unix: `python3 -m venv venv`
 
 ## Activate interpreter
 
-Windows: `HavenLink/Scripts/activate`
+Windows: `venv/Scripts/activate`
 
-Windows Powershell: `./HavenLink/Scripts/Activate.bat`
+Windows Powershell: `./venv/Scripts/Activate.bat`
 
-Unix: `source HavenLink/bin/activate`
+Unix: `source venv/bin/activate`
 
 ## Install requirements
 
