@@ -8,8 +8,7 @@ load_dotenv()
 
 from collections import defaultdict
 import statistics
-from datetime import date
-
+from datetime import date, datetime
 
 WEATHER_SEVERITY = {
     "Thunderstorm": 5,
@@ -24,7 +23,7 @@ template = """You are an expert weather forecaster.
 Below, you will be given the 5-day average weather forecast with the most severe conditions recorded. 
 Your style should be casual - write it like you will be telling a friend about the future weather.
 You should read the information, and give a concise weather forecast for the next 5 days.
-For reference, today's date is {today}, and the location is {location}. 
+For reference, today's date is {today}, it is {dotw}, and the location is {location}. 
 Your audience will be the homeless, so keep that in mind.
 
 Below is the aforementioned daily forecast:
@@ -32,7 +31,7 @@ Below is the aforementioned daily forecast:
 {five_day_forecast}
 ---
 Write the weather forecast as a single paragraph. Be cordial and concise, and use colloquially understandable words.
-Don't use markdown, and use relative terms for days (tomorrow, the day after tomorrow etc)"""
+Don't use markdown, and use days of the week or relative terms for dates."""
 
 def get_most_severe_weather(conditions):
     """ Returns the most severe weather condition from a list of conditions. """
@@ -62,6 +61,10 @@ def compute_daily_summary(forecast_list):
             "Weather Condition": get_most_severe_weather(data["conditions"]),
             "Precipitation Probability": max(data["precipitation_probs"])
         }
+
+        date_obj = datetime.strptime(date, '%Y-%m-%d')
+        summary["Weekday"] = date_obj.strftime("%A")
+        # print(summary["Weekday"])
         daily_summary.append(summary)
 
     return daily_summary
@@ -109,10 +112,11 @@ def forecast(zip_code):
     model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
     parser = StrOutputParser()
     today = date.today()
+    today_dotw = today.strftime("%A")
 
     chain = model | parser
 
-    formatted_input = template.format(today=today, location=loc_name, five_day_forecast=forecast_list)
+    formatted_input = template.format(today=today, location=loc_name, dotw=today_dotw, five_day_forecast=forecast_list)
 
     text = chain.invoke(formatted_input)
     # print(text)
@@ -120,7 +124,7 @@ def forecast(zip_code):
 
 
 if __name__ == '__main__':
-    zip_code = 30054
+    zip_code = 30324
 
     fc = forecast(zip_code)
     print(fc)
