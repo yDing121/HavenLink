@@ -1,82 +1,18 @@
 import React, { useState } from 'react';
-import Header from './components/Header';
-import IntroVideo from './components/IntroVideo';
-import InputSelection from './components/InputSelection';
-import VoiceInput from './components/VoiceInput';
-import TextInput from './components/TextInput';
-import ConfirmInput from './components/ConfirmInput';
+import { Container, Box, Typography, Button, Grid } from '@mui/material';  // 引入 MUI 的组件
 import Shelter from './components/Shelter';
 import FoodBank from './components/FoodBank';
 import HealthSupport from './components/HealthSupport';
 import EmergencyCall from './components/EmergencyCall';
-import NoMatch from './components/NoMatch';
-import { Container, Box, Typography, Button } from '@mui/material';  // 引入 Material-UI 组件
 
 function App() {
-  const [inputMethod, setInputMethod] = useState(null);
-  const [transcript, setTranscript] = useState('');
-  const [confirmed, setConfirmed] = useState(false);
   const [category, setCategory] = useState('');
-  const [error, setError] = useState(false);
-
-  const handleInputChange = (method) => {
-    setInputMethod(method);
-    setConfirmed(false);
-    setCategory('');
-    setError(false);
-  };
-
-  const handleSubmit = async (message) => {
-    setTranscript(message);
-    
-    const response = await fetch('/api/analyze', { 
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ input: message }),
-    });
-    const data = await response.json();
-    
-    if (['shelter', 'food_bank', 'health_support', 'emergency_call'].includes(data.category)) {
-      setCategory(data.category); 
-    } else {
-      setError(true); 
-    }
-  };
-
-  const handleConfirm = (isCorrect) => {
-    if (isCorrect) {
-      setConfirmed(true);
-    } else {
-      handleInputChange(null);
-    }
-  };
 
   const handleCategoryClick = (selectedCategory) => {
     setCategory(selectedCategory);
-    setConfirmed(true);  // 确保点击按钮后直接跳转到相应的页面
   };
 
   const renderContent = () => {
-    if (!inputMethod) {
-      return <InputSelection onInputChange={handleInputChange} />;
-    }
-
-    if (!transcript && !confirmed) {
-      return inputMethod === 'voice' ? (
-        <VoiceInput onSubmit={handleSubmit} />
-      ) : (
-        <TextInput onSubmit={handleSubmit} />
-      );
-    }
-
-    if (!confirmed) {
-      return <ConfirmInput transcript={transcript} onConfirm={handleConfirm} />;
-    }
-
-    if (error) {
-      return <NoMatch onRetry={() => handleInputChange(null)} />;
-    }
-
     switch (category) {
       case 'shelter':
         return <Shelter />;
@@ -87,49 +23,81 @@ function App() {
       case 'emergency_call':
         return <EmergencyCall />;
       default:
-        return <NoMatch onRetry={() => handleInputChange(null)} />;
+        return (
+          <>
+            {/* 欢迎标题 */}
+            <Box sx={{ textAlign: 'center', mt: 4 }}>
+              <Typography variant="h4" component="div" gutterBottom>
+                Welcome to HavenLink
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                Choose your input method and start interacting
+              </Typography>
+            </Box>
+
+            {/* 输入方式的按钮 */}
+            <Box sx={{ textAlign: 'center', my: 3 }}>
+              <Button variant="outlined" sx={{ mx: 2 }}>
+                Voice Input
+              </Button>
+              <Button variant="outlined" sx={{ mx: 2 }}>
+                Text Input
+              </Button>
+            </Box>
+
+            {/* 四个按钮的正方形布局 */}
+            <Grid container spacing={2} justifyContent="center">
+              <Grid item xs={12} sm={6}>
+                <Button variant="contained" fullWidth sx={{ height: '150px' }} onClick={() => handleCategoryClick('food_bank')}>
+                  Food Bank
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Button variant="contained" fullWidth sx={{ height: '150px' }} onClick={() => handleCategoryClick('shelter')}>
+                  Shelter
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Button variant="contained" fullWidth sx={{ height: '150px' }} onClick={() => handleCategoryClick('emergency_call')}>
+                  Emergency Call
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Button variant="contained" fullWidth sx={{ height: '150px' }} onClick={() => handleCategoryClick('health_support')}>
+                  Health Support
+                </Button>
+              </Grid>
+            </Grid>
+          </>
+        );
     }
   };
 
   return (
     <Container>
-      <Box sx={{ textAlign: 'center', my: 4 }}>
-        <Header />
-        <IntroVideo />
-        <Typography variant="h4" gutterBottom>
-          Choose your input method and start interacting
-        </Typography>
+      {/* 顶部的标题和描述 */}
+      <Grid container spacing={2} alignItems="center" justifyContent="space-between">
+        <Grid item xs={8}>
+          <Typography variant="h3" component="div" gutterBottom>
+            HavenLink
+          </Typography>
+          <Typography variant="body1">
+            A Smart City Solution for Assisting Homeless Communities
+          </Typography>
+        </Grid>
 
-        {/* Voice and Text Input buttons */}
-        <Box sx={{ mt: 3, mb: 3 }}>
-          <Button variant="outlined" onClick={() => handleInputChange('voice')} sx={{ mx: 2 }}>
-            Voice Input
-          </Button>
-          <Button variant="outlined" onClick={() => handleInputChange('text')} sx={{ mx: 2 }}>
-            Text Input
-          </Button>
-        </Box>
+        {/* 右上角的Logo 占位符 */}
+        <Grid item xs={4} sx={{ textAlign: 'right' }}>
+          <Box sx={{ width: 100, height: 100, border: '1px solid black', display: 'inline-block' }}>
+            <Typography>Logo</Typography> {/* 这是一个占位符，等你有Logo设计好后再替换 */}
+          </Box>
+        </Grid>
+      </Grid>
 
-        {/* New buttons for direct page navigation */}
-        <Box sx={{ mt: 3 }}>
-          <Button variant="contained" color="primary" onClick={() => handleCategoryClick('food_bank')} sx={{ mx: 1 }}>
-            FoodBank
-          </Button>
-          <Button variant="contained" color="primary" onClick={() => handleCategoryClick('shelter')} sx={{ mx: 1 }}>
-            Shelter
-          </Button>
-          <Button variant="contained" color="primary" onClick={() => handleCategoryClick('emergency_call')} sx={{ mx: 1 }}>
-            Emergency Call
-          </Button>
-          <Button variant="contained" color="primary" onClick={() => handleCategoryClick('health_support')} sx={{ mx: 1 }}>
-            Health Support
-          </Button>
-        </Box>
-
-        {renderContent()}
-      </Box>
+      {renderContent()}
     </Container>
   );
 }
 
 export default App;
+
