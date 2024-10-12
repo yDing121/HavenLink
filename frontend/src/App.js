@@ -4,6 +4,8 @@ import Shelter from './components/Shelter';
 import FoodBank from './components/FoodBank';
 import HealthSupport from './components/HealthSupport';
 import EmergencyCall from './components/EmergencyCall';
+import Weather from './components/Weather';  // 新增 Weather 组件
+import AIChat from './components/AIChat'; 
 
 function App() {
   const [category, setCategory] = useState('');
@@ -22,6 +24,10 @@ function App() {
         return <HealthSupport />;
       case 'emergency_call':
         return <EmergencyCall />;
+        case 'weather':
+        return <Weather />;  
+      case 'ai_chat':
+        return <AIChat />;  
       default:
         return (
           <>
@@ -48,23 +54,33 @@ function App() {
             {/* 四个按钮的正方形布局 */}
             <Grid container spacing={2} justifyContent="center">
               <Grid item xs={12} sm={6}>
-                <Button variant="contained" fullWidth sx={{ height: '150px' }} onClick={() => handleCategoryClick('food_bank')}>
+                <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#FF7043', color: 'white', '&:hover': { backgroundColor: '#E64A19' } }} onClick={() => handleCategoryClick('food_bank')}>
                   Food Bank
                 </Button>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Button variant="contained" fullWidth sx={{ height: '150px' }} onClick={() => handleCategoryClick('shelter')}>
+                <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#29B6F6', color: 'white', '&:hover': { backgroundColor: '#0288D1' } }} onClick={() => handleCategoryClick('shelter')}>
                   Shelter
                 </Button>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Button variant="contained" fullWidth sx={{ height: '150px' }} onClick={() => handleCategoryClick('emergency_call')}>
+                <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#66BB6A', color: 'white', '&:hover': { backgroundColor: '#388E3C' } }} onClick={() => handleCategoryClick('emergency_call')}>
                   Emergency Call
                 </Button>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Button variant="contained" fullWidth sx={{ height: '150px' }} onClick={() => handleCategoryClick('health_support')}>
+                <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#FFA726', color: 'white', '&:hover': { backgroundColor: '#FB8C00' } }} onClick={() => handleCategoryClick('health_support')}>
                   Health Support
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#7E57C2', color: 'white', '&:hover': { backgroundColor: '#5E35B1' } }} onClick={() => handleCategoryClick('weather')}>
+                  Weather
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#FF5252', color: 'white', '&:hover': { backgroundColor: '#E53935' } }} onClick={() => handleCategoryClick('ai_chat')}>
+                  AI Chat Emotional Support
                 </Button>
               </Grid>
             </Grid>
@@ -72,7 +88,7 @@ function App() {
         );
     }
   };
-
+  
   return (
     <Container>
       {/* 顶部的标题和描述 */}
