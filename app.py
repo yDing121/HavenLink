@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import os
-from utils.preprocess_audio import preprocess_audio
-from utils.speech_to_text import speech_to_text
+from api.audio_path_to_command import audio_path_to_command
 from config import ROOT
 from data.database import shelter_db, food_bank_db, health_services,emergency_contacts
 from flask_cors import CORS
@@ -11,11 +10,7 @@ CORS(app)
 
 # Dummy function for process API (replace with actual API call)
 def process(audio_file_path):
-    out_path, _, _2 = preprocess_audio(audio_file_path)
-    t = speech_to_text(out_path)
-    print("what")
-    # Here you would process the audio file and return the result
-    return f"{t}"
+    return audio_path_to_command(audio_file_path)
 
 def filter_nearby_places(db, max_distance=3.0):
     return [place for place in db if place["distance"] <= max_distance]
