@@ -4,3 +4,7 @@ utils/__pycache__/*
 .env
 processed/*
 uploads/*
+data/__pycache__/*
+**/__pycache__/*
+api/__pycache__/*
+src/__pycache__/*
