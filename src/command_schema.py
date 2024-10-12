@@ -1,5 +1,3 @@
-from typing import Optional
-
 from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
 from langchain_openai.chat_models import ChatOpenAI

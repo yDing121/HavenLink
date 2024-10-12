@@ -3,3 +3,6 @@ librosa~=0.10.2.post1
 numpy~=2.0.2
 soundfile~=0.12.1
 flask~=3.0.3
+langchain-openai~=0.2.2
+langchain-core~=0.3.10
+python-dotenv~=1.0.1
