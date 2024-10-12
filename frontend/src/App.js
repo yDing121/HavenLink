@@ -10,20 +10,7 @@ import FoodBank from './components/FoodBank';
 import HealthSupport from './components/HealthSupport';
 import EmergencyCall from './components/EmergencyCall';
 import NoMatch from './components/NoMatch';
-import { Box, Container, Typography } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#F9AC1F',
-    },
-    secondary: {
-      main: '#FEFBF5',
-    },
-  },
-});
-
+import { Container, Box, Typography, Button } from '@mui/material';  // 引入 Material-UI 组件
 
 function App() {
   const [inputMethod, setInputMethod] = useState(null);
@@ -40,7 +27,6 @@ function App() {
   };
 
   const handleSubmit = async (message) => {
-    // Send message to LLM for category analysis
     setTranscript(message);
     
     const response = await fetch('/api/analyze', { 
@@ -65,12 +51,17 @@ function App() {
     }
   };
 
+  const handleCategoryClick = (selectedCategory) => {
+    setCategory(selectedCategory);
+    setConfirmed(true);  // 确保点击按钮后直接跳转到相应的页面
+  };
+
   const renderContent = () => {
     if (!inputMethod) {
       return <InputSelection onInputChange={handleInputChange} />;
     }
 
-    if (!transcript) {
+    if (!transcript && !confirmed) {
       return inputMethod === 'voice' ? (
         <VoiceInput onSubmit={handleSubmit} />
       ) : (
@@ -108,12 +99,37 @@ function App() {
         <Typography variant="h4" gutterBottom>
           Choose your input method and start interacting
         </Typography>
+
+        {/* Voice and Text Input buttons */}
+        <Box sx={{ mt: 3, mb: 3 }}>
+          <Button variant="outlined" onClick={() => handleInputChange('voice')} sx={{ mx: 2 }}>
+            Voice Input
+          </Button>
+          <Button variant="outlined" onClick={() => handleInputChange('text')} sx={{ mx: 2 }}>
+            Text Input
+          </Button>
+        </Box>
+
+        {/* New buttons for direct page navigation */}
+        <Box sx={{ mt: 3 }}>
+          <Button variant="contained" color="primary" onClick={() => handleCategoryClick('food_bank')} sx={{ mx: 1 }}>
+            FoodBank
+          </Button>
+          <Button variant="contained" color="primary" onClick={() => handleCategoryClick('shelter')} sx={{ mx: 1 }}>
+            Shelter
+          </Button>
+          <Button variant="contained" color="primary" onClick={() => handleCategoryClick('emergency_call')} sx={{ mx: 1 }}>
+            Emergency Call
+          </Button>
+          <Button variant="contained" color="primary" onClick={() => handleCategoryClick('health_support')} sx={{ mx: 1 }}>
+            Health Support
+          </Button>
+        </Box>
+
         {renderContent()}
       </Box>
     </Container>
   );
 }
-
-
 
 export default App;
