@@ -1,11 +1,23 @@
 shelter_db = [
-    {"name": "Shelter A", "address": "123 Main St", "distance": 2.0, "hours": "8 AM - 8 PM"},
-    {"name": "Shelter B", "address": "456 Oak St", "distance": 1.5, "hours": "24/7"},
-    {"name": "Shelter C", "address": "789 Pine St", "distance": 3.5, "hours": "9 AM - 5 PM"},
+    {"name": "Harvard Square Homeless Shelter", "address": "66 Withrop St", "distance": 0.7, "hours": "7 PM - 8 AM"},
+    {"name": "Y2Y Harvard Square", "address": "1 Church St", "distance": 0.5, "hours": "7 PM - 8 AM"},
+    {"name": "Heading Home Inc", "address": "479 Concord Ave", "distance": 0.9, "hours": "24/7"},
 ]
 
 food_bank_db = [
-    {"name": "Food Bank A", "address": "321 Maple St", "distance": 2.5, "hours": "9 AM - 6 PM"},
-    {"name": "Food Bank B", "address": "654 Elm St", "distance": 3.2, "hours": "8 AM - 4 PM"},
-    {"name": "Food Bank C", "address": "987 Cedar St", "distance": 1.0, "hours": "7 AM - 7 PM"},
+    {"name": "Christ Church Cambridge Harvard Square", "address": "0 Garden St", "distance": 0.4, "hours": "10AM - 7PM"},
+    {"name": "Saint James Helping Hands - Food Distribution Center", "address": "1991 Massachusetts Ave", "distance": 0.7, "hours": "24/7"},
+    {"name": "Mystic Community Market", "address": "291 Mystic Ave", "distance": 2.0, "hours": "Various"},
 ]
+
+health_services = [
+        {"name": "Community Health Center", "phoneNumber": "555-1234", "address": "123 Main St."},
+        {"name": "Mental Health Clinic", "phoneNumber": "555-5678", "address": "456 Elm St."},
+        {"name": "Urgent Care", "phoneNumber": "555-9012", "address": "789 Maple Ave."}
+    ]
+
+emergency_contacts = [
+        {"name": "Police", "phoneNumber": "911"},
+        {"name": "Fire Department", "phoneNumber": "911"},
+        {"name": "Ambulance", "phoneNumber": "911"}
+    ]

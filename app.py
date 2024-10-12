@@ -3,9 +3,11 @@ import os
 from utils.preprocess_audio import preprocess_audio
 from utils.speech_to_text import speech_to_text
 from config import ROOT
-from data.database import shelter_db, food_bank_db 
+from data.database import shelter_db, food_bank_db, health_services,emergency_contacts
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # Dummy function for process API (replace with actual API call)
 def process(audio_file_path):
@@ -40,14 +42,23 @@ def get_food_banks():
 
 # API endpoint to get mental health support hotline
 @app.route('/GetMentalHealthSupport', methods=['GET'])
-def get_mental_health_support():
-    hotline_number = "1-800-123-4567"
-    return jsonify({"hotline": hotline_number})
+def health_support():
+    health_services = [
+        {"name": "Community Health Center", "phoneNumber": "555-1234", "address": "123 Main St."},
+        {"name": "Mental Health Clinic", "phoneNumber": "555-5678", "address": "456 Elm St."},
+        {"name": "Urgent Care", "phoneNumber": "555-9012", "address": "789 Maple Ave."}
+    ]
+    return jsonify(health_services)
 
 # API endpoint to get emergency call number
 @app.route('/EmergencyCall', methods=['GET'])
 def emergency_call():
-    return jsonify({"emergency_number": "911"})
+    emergency_contacts = [
+        {"name": "Police", "phoneNumber": "911"},
+        {"name": "Fire Department", "phoneNumber": "911"},
+        {"name": "Ambulance", "phoneNumber": "911"}
+    ]
+    return jsonify(emergency_contacts)
 
 
 @app.route('/')
