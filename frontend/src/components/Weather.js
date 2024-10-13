@@ -51,6 +51,7 @@ function Weather() {
       {weatherInfo && <p>{weatherInfo}</p>} {/* Display fetched weather info */}
     </div>
   );
+  // update triger
 }
 
 export default Weather;
