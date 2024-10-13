@@ -208,7 +208,6 @@ function App() {
           </Typography>
         </Grid>
 
-        
       </Grid>
 
       {renderContent()}

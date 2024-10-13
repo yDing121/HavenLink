@@ -121,9 +121,14 @@ def upload_voice():
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
-    file_path = os.path.join(f"{ROOT}/uploads/", "recording.wav")
+    file_path = os.path.join(f"{ROOT}/uploads", "recording.wav")
     file.save(file_path)  # Save the file to the specified directory
-    return jsonify({'message': 'File successfully uploaded'}), 200
+    # return jsonify({'message': 'File successfully uploaded'}), 200
+
+    # print(file_path)
+    text = process(file_path)
+    return jsonify({'message': text}), 200
+
 
 
 if __name__ == '__main__':
