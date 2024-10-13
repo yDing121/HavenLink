@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Container, Box, Typography, Button, Grid } from '@mui/material';  // 引入 MUI 的组件
 import Shelter from './components/Shelter';
 import FoodBank from './components/FoodBank';
@@ -7,27 +7,89 @@ import EmergencyCall from './components/EmergencyCall';
 import Weather from './components/Weather';  // 新增 Weather 组件
 import AIChat from './components/AIChat'; 
 
+
 function App() {
   const [category, setCategory] = useState('');
-
+  const [inputMethod, setInputMethod] = useState(null); // 用于跟踪当前的输入方式
+  const [isRecording, setIsRecording] = useState(false);  // 录音状态
+  const [audioBlob, setAudioBlob] = useState(null);  // 存储录音的音频数据
+  const mediaRecorderRef = useRef(null);  // 引用 MediaRecorder 对象
+  
   const handleCategoryClick = (selectedCategory) => {
     setCategory(selectedCategory);
+  };
+
+  // 开始录制语音
+  const startRecording = async () => {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorderRef.current = mediaRecorder;
+
+        let chunks = [];
+
+        mediaRecorder.ondataavailable = (event) => {
+          chunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+          setAudioBlob(audioBlob);  // 保存音频数据
+          chunks = [];
+        };
+
+        mediaRecorder.start();
+        setIsRecording(true); // 设置录音状态为 true
+      } catch (err) {
+        console.error('Error accessing microphone', err);
+      }
+    } else {
+      alert('Your browser does not support audio recording.');
+    }
+  };
+
+  // 停止录音并上传音频
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();  // 停止录制
+      setIsRecording(false);  // 停止录音状态
+    }
+  };
+
+  // 上传录制的音频
+  const uploadAudio = async () => {
+    if (audioBlob) {
+      const formData = new FormData();
+      formData.append('audio', audioBlob, 'recording.wav');  // 将音频命名为 recording.wav
+
+      const response = await fetch('http://localhost:6969/uploadVoice', {
+        method: 'POST',
+        body: formData,  // 上传表单数据
+      });
+
+      if (response.ok) {
+        alert('Audio uploaded successfully');
+      } else {
+        alert('Failed to upload audio');
+      }
+    }
   };
 
   const renderContent = () => {
     switch (category) {
       case 'shelter':
-        return <Shelter />;
+        return <Shelter onBack={() => handleCategoryClick('')} />;
       case 'food_bank':
-        return <FoodBank />;
+        return <FoodBank onBack={() => handleCategoryClick('')} />;
       case 'health_support':
-        return <HealthSupport />;
+        return <HealthSupport onBack={() => handleCategoryClick('')} />;
       case 'emergency_call':
-        return <EmergencyCall />;
-        case 'weather':
-        return <Weather />;  
+        return <EmergencyCall onBack={() => handleCategoryClick('')} />;
+      case 'weather':
+        return <Weather onBack={() => handleCategoryClick('')} />;
       case 'ai_chat':
-        return <AIChat />;  
+        return <AIChat onBack={() => handleCategoryClick('')} />;
       default:
         return (
           <>
@@ -42,45 +104,64 @@ function App() {
             </Box>
 
             {/* 输入方式的按钮 */}
-            <Box sx={{ textAlign: 'center', my: 3 }}>
-              <Button variant="outlined" sx={{ mx: 2 }}>
+            <Box sx={{ textAlign: 'center', my: 3, mb: 6 }}>
+              <Button variant="outlined" sx={{ mx: 2 }} onClick={() => setInputMethod('voice')}>
                 Voice Input
-              </Button>
-              <Button variant="outlined" sx={{ mx: 2 }}>
-                Text Input
               </Button>
             </Box>
 
+            {/* Voice Input 录音控件 */}
+            {inputMethod === 'voice' && (
+              <Box sx={{ textAlign: 'center', mt: 4, mb: 6 }}>
+                <Typography variant="body1" gutterBottom>
+                  {isRecording ? "Recording audio... Click stop to finish." : "Click start to begin recording."}
+                </Typography>
+                <Button variant="contained" onClick={startRecording} disabled={isRecording} sx={{ mx: 2 }}>
+                  Start Recording
+                </Button>
+                <Button variant="contained" onClick={stopRecording} disabled={!isRecording} sx={{ mx: 2 }}>
+                  Stop Recording
+                </Button>
+                <Button variant="contained" onClick={uploadAudio} sx={{ mx: 2 }} disabled={!audioBlob}>
+                  Upload Audio
+                </Button>
+                {/* 返回按钮 */}
+                <Button variant="contained" onClick={() => setInputMethod(null)}>
+                  Back
+                </Button>
+              </Box>
+            )}
+
             {/* 四个按钮的正方形布局 */}
             <Grid container spacing={2} justifyContent="center">
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={10} sm={6}>
                 <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#FF7043', color: 'white', '&:hover': { backgroundColor: '#E64A19' } }} onClick={() => handleCategoryClick('food_bank')}>
                   Food Bank
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={10} sm={6}>
                 <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#29B6F6', color: 'white', '&:hover': { backgroundColor: '#0288D1' } }} onClick={() => handleCategoryClick('shelter')}>
                   Shelter
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={10} sm={6}>
                 <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#66BB6A', color: 'white', '&:hover': { backgroundColor: '#388E3C' } }} onClick={() => handleCategoryClick('emergency_call')}>
                   Emergency Call
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={10} sm={6}>
                 <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#FFA726', color: 'white', '&:hover': { backgroundColor: '#FB8C00' } }} onClick={() => handleCategoryClick('health_support')}>
                   Health Support
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={10} sm={6}>
                 <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#7E57C2', color: 'white', '&:hover': { backgroundColor: '#5E35B1' } }} onClick={() => handleCategoryClick('weather')}>
                   Weather
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={10} sm={6}>
                 <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#FF5252', color: 'white', '&:hover': { backgroundColor: '#E53935' } }} onClick={() => handleCategoryClick('ai_chat')}>
-                  AI Chat Emotional Support
+                  AI Chat 
                 </Button>
               </Grid>
             </Grid>
@@ -88,7 +169,7 @@ function App() {
         );
     }
   };
-  
+
   return (
     <Container>
       {/* 顶部的标题和描述 */}
