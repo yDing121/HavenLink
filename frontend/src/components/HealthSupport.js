@@ -36,11 +36,14 @@ function HealthSupport({ onBack }) {  // 接收 onBack 函数，用于返回主�
 
       {/* 列表显示 health support services */}
       {healthServices.length > 0 ? (
-        <ul>
+        <ul style={{ listStyleType: "none", padding: 0 }}> {/* 移除默认圆圈 */}
           {healthServices.map((service, index) => (
-            <li key={index}>
-              <strong>{service.name}</strong>: {service.phoneNumber},{" "}
-              {service.address}
+            <li key={index} style={{ marginBottom: "20px" }}> {/* 添加间距 */}
+              <Typography variant="h6" component="strong">
+                {service.name}
+              </Typography>
+              <Typography>Phone: {service.phoneNumber}</Typography>
+              <Typography>Address: {service.address}</Typography>
             </li>
           ))}
         </ul>
@@ -57,3 +60,4 @@ function HealthSupport({ onBack }) {  // 接收 onBack 函数，用于返回主�
 }
 
 export default HealthSupport;
+
