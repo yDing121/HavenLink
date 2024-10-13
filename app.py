@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import os
+from api import single_round_chat
 from api.audio_path_to_command import audio_path_to_command
 from api.weather_forecast import forecast
 from config import ROOT
@@ -72,6 +73,24 @@ def get_forecast():
         return jsonify({"forecast": text}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
+@app.route('/chat', methods=['POST'])
+def get_chat():
+    # Get the human message from the JSON request body
+    data = request.get_json()
+    human_msg = data.get('message')
+
+    if not human_msg:
+        return jsonify({"error": "Message is required"}), 400
+
+    try:
+        # Call the single_round_chat function with the provided human message
+        text = single_round_chat.single_round_chat(human_msg)
+        return jsonify({"response": text}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
     
 # @app.route('/')
 # def index():
