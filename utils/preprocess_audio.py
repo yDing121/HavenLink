@@ -6,7 +6,8 @@ import soundfile as sf
 from config import ROOT
 
 def preprocess_audio(fpath: str, target_sample_rate=16000):
-    fpath = f"{ROOT}/{fpath}"
+    fpath = f"{fpath}"
+    print(fpath)
     audio, sample_rate = librosa.load(fpath, sr=None)
 
     # Denoise
