@@ -49,6 +49,31 @@ function App() {
     }
   };
 
+
+// Upload录制的音频
+  const uploadAudio = async () => {
+    if (audioBlob) {
+      const formData = new FormData();
+      formData.append('audio', audioBlob, 'recording.wav');  // 将音频命名为 recording.wav
+
+      try {
+        const response = await fetch('http://localhost:6969/uploadVoice', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          alert('Audio uploaded successfully');
+        } else {
+          alert('Failed to upload audio');
+        }
+      } catch (error) {
+        console.error('Error uploading audio:', error);
+        alert('Error uploading audio');
+      }
+    }
+  };
+
   // 停止录音并上传音频
   const stopRecording = () => {
     if (mediaRecorderRef.current) {
@@ -56,25 +81,25 @@ function App() {
       setIsRecording(false);  // 停止录音状态
     }
   };
-
-  // 上传录制的音频
-  const uploadAudio = async () => {
-    if (audioBlob) {
-      const formData = new FormData();
-      formData.append('audio', audioBlob, 'recording.wav');  // 将音频命名为 recording.wav
-
-      const response = await fetch('http://localhost:6969/uploadVoice', {
-        method: 'POST',
-        body: formData,  // 上传表单数据
-      });
-
-      if (response.ok) {
-        alert('Audio uploaded successfully');
-      } else {
-        alert('Failed to upload audio');
-      }
-    }
-  };
+//
+//  // 上传录制的音频
+//  const uploadAudio = async () => {
+//    if (audioBlob) {
+//      const formData = new FormData();
+//      formData.append('audio', audioBlob, 'recording.wav');  // 将音频命名为 recording.wav
+//
+//      const response = await fetch('http://localhost:6969/uploadVoice', {
+//        method: 'POST',
+//        body: formData,  // 上传表单数据
+//      });
+//
+//      if (response.ok) {
+//        alert('Audio uploaded successfully');
+//      } else {
+//        alert('Failed to upload audio');
+//      }
+//    }
+//  };
 
   const renderContent = () => {
     switch (category) {
@@ -183,12 +208,7 @@ function App() {
           </Typography>
         </Grid>
 
-        {/* 右上角的Logo 占位符 */}
-        <Grid item xs={4} sx={{ textAlign: 'right' }}>
-          <Box sx={{ width: 100, height: 100, border: '1px solid black', display: 'inline-block' }}>
-            <Typography>Logo</Typography> {/* 这是一个占位符，等你有Logo设计好后再替换 */}
-          </Box>
-        </Grid>
+        
       </Grid>
 
       {renderContent()}
