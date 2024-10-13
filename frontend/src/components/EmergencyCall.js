@@ -34,7 +34,7 @@ function EmergencyCall({ onBack }) {
 
   return (
     <Box sx={{ textAlign: 'center', mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" component="div" gutterBottom sx={{ fontSize: '48px', fontWeight: 'bold' }}>
         Emergency Call
       </Typography>
 
@@ -51,7 +51,7 @@ function EmergencyCall({ onBack }) {
               sx={{
                 width: '80%',
                 mb: 2,
-                backgroundColor: index % 2 === 0 ? '#FF7043' : '#29B6F6',
+                backgroundColor: index % 2 === 0 ? '#f0702b' : '#29B6F6',
                 '&:hover': {
                   backgroundColor: index % 2 === 0 ? '#E64A19' : '#0288D1',
                 },

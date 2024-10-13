@@ -27,7 +27,7 @@ function HealthSupport({ onBack }) {  // 接收 onBack 函数，用于返回主�
 
   return (
     <Box sx={{ textAlign: 'center', mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
+     <Typography variant="h4" component="div" gutterBottom sx={{ fontSize: '48px', fontWeight: 'bold' }}>
         Health Support
       </Typography>
 

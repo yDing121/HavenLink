@@ -6,15 +6,23 @@ import HealthSupport from './components/HealthSupport';
 import EmergencyCall from './components/EmergencyCall';
 import Weather from './components/Weather';  // 新增 Weather 组件
 import AIChat from './components/AIChat'; 
+import './App.css';
 
+import aiIcon from './assets/AI.png'; // 使用相对路径引入图片
+import WeatherIcon from './assets/weather.png';
+import HouseIcon from './assets/HOUSE.png';
+import FoodIcon from './assets/food bank.webp';
+import HealthIcon from './assets/health-8.png';
+import EmergencyIcon from './assets/124992.png';
+import Cloud from './assets/CloudPng.webp';  // 引入背景图片
 
 function App() {
   const [category, setCategory] = useState('');
   const [inputMethod, setInputMethod] = useState(null); // 用于跟踪当前的输入方式
-  const [isRecording, setIsRecording] = useState(false);  // 录音状态
-  const [audioBlob, setAudioBlob] = useState(null);  // 存储录音的音频数据
-  const mediaRecorderRef = useRef(null);  // 引用 MediaRecorder 对象
-  
+  const [isRecording, setIsRecording] = useState(false);  
+  const [audioBlob, setAudioBlob] = useState(null);  
+  const mediaRecorderRef = useRef(null);  
+
   const handleCategoryClick = (selectedCategory) => {
     setCategory(selectedCategory);
   };
@@ -35,12 +43,12 @@ function App() {
 
         mediaRecorder.onstop = () => {
           const audioBlob = new Blob(chunks, { type: 'audio/wav' });
-          setAudioBlob(audioBlob);  // 保存音频数据
+          setAudioBlob(audioBlob);  
           chunks = [];
         };
 
         mediaRecorder.start();
-        setIsRecording(true); // 设置录音状态为 true
+        setIsRecording(true);  
       } catch (err) {
         console.error('Error accessing microphone', err);
       }
@@ -49,12 +57,18 @@ function App() {
     }
   };
 
+  // 停止录音
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();  
+      setIsRecording(false);  
+    }
+  };
 
-// Upload录制的音频
   const uploadAudio = async () => {
     if (audioBlob) {
       const formData = new FormData();
-      formData.append('audio', audioBlob, 'recording.wav');  // 将音频命名为 recording.wav
+      formData.append('audio', audioBlob, 'recording.wav');  
 
       try {
         const response = await fetch('http://localhost:6969/uploadVoice', {
@@ -63,33 +77,7 @@ function App() {
         });
 
         if (response.ok) {
-          const data = await response.json();
-          const msg = data.message;
-          switch (msg){
-            case "getshelter":
-              handleCategoryClick("shelter");
-              break;
-            case "getfoodbanks":
-              handleCategoryClick("food_bank");
-              break;
-            case "getmentalhealthsupport":
-              handleCategoryClick("health_support");
-              break;
-            case "emergencycall":
-              handleCategoryClick("emergency_call");
-              break;
-            case "weather":
-              handleCategoryClick("weather");
-              break;
-            case "aichat":
-              handleCategoryClick("ai_chat");
-              break;
-            default:
-              alert("Unknown command, please retry!")
-              handleCategoryClick("");
-          }
-//          renderContent();
-//          alert('Audio uploaded successfully');
+          alert('Audio uploaded successfully');
         } else {
           alert('Failed to upload audio');
         }
@@ -99,33 +87,6 @@ function App() {
       }
     }
   };
-
-  // 停止录音并上传音频
-  const stopRecording = () => {
-    if (mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop();  // 停止录制
-      setIsRecording(false);  // 停止录音状态
-    }
-  };
-//
-//  // 上传录制的音频
-//  const uploadAudio = async () => {
-//    if (audioBlob) {
-//      const formData = new FormData();
-//      formData.append('audio', audioBlob, 'recording.wav');  // 将音频命名为 recording.wav
-//
-//      const response = await fetch('http://localhost:6969/uploadVoice', {
-//        method: 'POST',
-//        body: formData,  // 上传表单数据
-//      });
-//
-//      if (response.ok) {
-//        alert('Audio uploaded successfully');
-//      } else {
-//        alert('Failed to upload audio');
-//      }
-//    }
-//  };
 
   const renderContent = () => {
     switch (category) {
@@ -146,8 +107,11 @@ function App() {
           <>
             {/* 欢迎标题 */}
             <Box sx={{ textAlign: 'center', mt: 4 }}>
-              <Typography variant="h4" component="div" gutterBottom>
+              <Typography variant="h4" component="div" gutterBottom sx={{ fontSize: '48px', fontWeight: 'bold' }}>
                 Welcome to HavenLink
+              </Typography>
+              <Typography variant="body2" gutterBottom sx={{ fontSize: '16px', color: '#555' }}>
+                A Smart City Solution for Assisting Homeless Communities
               </Typography>
               <Typography variant="body1" gutterBottom>
                 Choose your input method and start interacting
@@ -156,63 +120,331 @@ function App() {
 
             {/* 输入方式的按钮 */}
             <Box sx={{ textAlign: 'center', my: 3, mb: 6 }}>
-              <Button variant="outlined" sx={{ mx: 2 }} onClick={() => setInputMethod('voice')}>
+              <Button 
+                variant="contained" 
+                fullWidth 
+                sx={{ 
+                  backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+                  color: 'black', 
+                  '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' }, 
+                  fontSize: '20px', 
+                  fontWeight: 'bold', 
+                  borderRadius: '30px', 
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', 
+                  backdropFilter: 'blur(10px)', 
+                  width: '100%', 
+                  maxWidth: '1200px', 
+                  height: '50px', 
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                }} 
+                onClick={() => {
+                  setInputMethod('voice');
+                }}
+              >
                 Voice Input
               </Button>
             </Box>
 
-            {/* Voice Input 录音控件 */}
+            {/* Voice Input Recording Controls */}
             {inputMethod === 'voice' && (
-              <Box sx={{ textAlign: 'center', mt: 4, mb: 6 }}>
-                <Typography variant="body1" gutterBottom>
-                  {isRecording ? "Recording audio... Click stop to finish." : "Click start to begin recording."}
-                </Typography>
-                <Button variant="contained" onClick={startRecording} disabled={isRecording} sx={{ mx: 2 }}>
-                  Start Recording
-                </Button>
-                <Button variant="contained" onClick={stopRecording} disabled={!isRecording} sx={{ mx: 2 }}>
-                  Stop Recording
-                </Button>
-                <Button variant="contained" onClick={uploadAudio} sx={{ mx: 2 }} disabled={!audioBlob}>
-                  Upload Audio
-                </Button>
-                {/* 返回按钮 */}
-                <Button variant="contained" onClick={() => setInputMethod(null)}>
-                  Back
-                </Button>
-              </Box>
+              <Grid container spacing={2} justifyContent="center" sx={{ mt: 4, mb: 6 }}>
+                <Grid item>
+                  {/* Start Recording Button */}
+                  <Button 
+                    variant="contained" 
+                    onClick={startRecording} 
+                    disabled={isRecording} 
+                    sx={{ 
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+                      color: 'black', 
+                      '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' }, 
+                      fontSize: '16px', 
+                      fontWeight: 'bold', 
+                      borderRadius: '30px', 
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', 
+                      backdropFilter: 'blur(10px)', 
+                      height: '40px', 
+                      width: '140px', 
+                      display: 'flex', 
+                      justifyContent: 'center', 
+                      alignItems: 'center', 
+                      transition: 'transform 0.2s ease, box-shadow 0.2s ease' 
+                    }}
+                  >
+                    Start 
+                  </Button>
+                </Grid>
+
+                <Grid item>
+                  {/* Stop Recording Button */}
+                  <Button 
+                    variant="contained" 
+                    onClick={stopRecording} 
+                    disabled={!isRecording} 
+                    sx={{ 
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+                      color: 'black', 
+                      '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' }, 
+                      fontSize: '16px', 
+                      fontWeight: 'bold', 
+                      borderRadius: '30px', 
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', 
+                      backdropFilter: 'blur(10px)', 
+                      height: '40px', 
+                      width: '140px', 
+                      display: 'flex', 
+                      justifyContent: 'center', 
+                      alignItems: 'center', 
+                      transition: 'transform 0.2s ease, box-shadow 0.2s ease' 
+                    }}
+                  >
+                    Stop 
+                  </Button>
+                </Grid>
+
+                <Grid item>
+                  {/* Upload Audio Button */}
+                  <Button 
+                    variant="contained" 
+                    onClick={uploadAudio} 
+                    sx={{ 
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+                      color: 'black', 
+                      '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' }, 
+                      fontSize: '16px', 
+                      fontWeight: 'bold', 
+                      borderRadius: '30px', 
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', 
+                      backdropFilter: 'blur(10px)', 
+                      height: '40px', 
+                      width: '140px', 
+                      display: 'flex', 
+                      justifyContent: 'center', 
+                      alignItems: 'center', 
+                      transition: 'transform 0.2s ease, box-shadow 0.2s ease' 
+                    }} 
+                    disabled={!audioBlob}
+                  >
+                    Upload
+                  </Button>
+                </Grid>
+
+                <Grid item>
+                  {/* Back Button */}
+                  <Button 
+                    variant="contained" 
+                    onClick={() => setInputMethod(null)} 
+                    sx={{ 
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+                      color: 'black', 
+                      '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' }, 
+                      fontSize: '16px', 
+                      fontWeight: 'bold', 
+                      borderRadius: '30px', 
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', 
+                      backdropFilter: 'blur(10px)', 
+                      height: '40px', 
+                      width: '140px', 
+                      display: 'flex', 
+                      justifyContent: 'center', 
+                      alignItems: 'center', 
+                      transition: 'transform 0.2s ease, box-shadow 0.2s ease' 
+                    }}
+                  >
+                    Back
+                  </Button>
+                </Grid>
+              </Grid>
             )}
 
-            {/* 四个按钮的正方形布局 */}
+            {/* 六个按钮的正方形布局 */}
             <Grid container spacing={2} justifyContent="center">
               <Grid item xs={10} sm={6}>
-                <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#FF7043', color: 'white', '&:hover': { backgroundColor: '#E64A19' } }} onClick={() => handleCategoryClick('food_bank')}>
+                <Button 
+                  variant="contained" 
+                  fullWidth 
+                  sx={{ 
+                    height: '150px', 
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+                    color: 'black', 
+                    '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' },
+                    fontSize: '24px',
+                    fontWeight: 'bold',
+                    borderRadius: '30px',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    backdropFilter: 'blur(10px)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px 20px',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                  }} 
+                  onClick={() => handleCategoryClick('food_bank')}
+                >
+                  <img 
+                    src={FoodIcon}  
+                    alt="Food Bank Icon" 
+                    style={{ width: '60px', height: '60px', marginRight: '10px' }} 
+                  />
                   Food Bank
                 </Button>
               </Grid>
+
               <Grid item xs={10} sm={6}>
-                <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#29B6F6', color: 'white', '&:hover': { backgroundColor: '#0288D1' } }} onClick={() => handleCategoryClick('shelter')}>
+                <Button 
+                  variant="contained" 
+                  fullWidth 
+                  sx={{ 
+                    height: '150px', 
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+                    color: 'black', 
+                    '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' },
+                    fontSize: '24px',
+                    fontWeight: 'bold',
+                    borderRadius: '30px',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    backdropFilter: 'blur(10px)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px 20px',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                  }} 
+                  onClick={() => handleCategoryClick('shelter')}
+                >
+                  <img 
+                    src={HouseIcon}  
+                    alt="Shelter Icon" 
+                    style={{ width: '50px', height: '50px', marginRight: '10px' }} 
+                  />
                   Shelter
                 </Button>
               </Grid>
+
               <Grid item xs={10} sm={6}>
-                <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#66BB6A', color: 'white', '&:hover': { backgroundColor: '#388E3C' } }} onClick={() => handleCategoryClick('emergency_call')}>
+                <Button 
+                  variant="contained" 
+                  fullWidth 
+                  sx={{ 
+                    height: '150px', 
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+                    color: 'black', 
+                    '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' },
+                    fontSize: '24px',
+                    fontWeight: 'bold',
+                    borderRadius: '30px',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    backdropFilter: 'blur(10px)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px 20px',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                  }} 
+                  onClick={() => handleCategoryClick('emergency_call')}
+                >
+                  <img 
+                    src={EmergencyIcon}  
+                    alt="Emergency Call Icon" 
+                    style={{ width: '40px', height: '40px', marginRight: '10px' }} 
+                  />
                   Emergency Call
                 </Button>
               </Grid>
+
               <Grid item xs={10} sm={6}>
-                <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#FFA726', color: 'white', '&:hover': { backgroundColor: '#FB8C00' } }} onClick={() => handleCategoryClick('health_support')}>
+                <Button 
+                  variant="contained" 
+                  fullWidth 
+                  sx={{ 
+                    height: '150px', 
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+                    color: 'black', 
+                    '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' },
+                    fontSize: '24px',
+                    fontWeight: 'bold',
+                    borderRadius: '30px',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    backdropFilter: 'blur(10px)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px 20px',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                  }} 
+                  onClick={() => handleCategoryClick('health_support')}
+                >
+                  <img 
+                    src={HealthIcon}  
+                    alt="Health Support Icon" 
+                    style={{ width: '50px', height: '50px', marginRight: '10px' }} 
+                  />
                   Health Support
                 </Button>
               </Grid>
+
               <Grid item xs={10} sm={6}>
-                <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#7E57C2', color: 'white', '&:hover': { backgroundColor: '#5E35B1' } }} onClick={() => handleCategoryClick('weather')}>
+                <Button 
+                  variant="contained" 
+                  fullWidth 
+                  sx={{ 
+                    height: '150px', 
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+                    color: 'black', 
+                    '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' },
+                    fontSize: '24px',
+                    fontWeight: 'bold',
+                    borderRadius: '30px',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    backdropFilter: 'blur(10px)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px 20px',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                  }} 
+                  onClick={() => handleCategoryClick('weather')}
+                >
+                  <img 
+                    src={WeatherIcon}  
+                    alt="Weather Icon" 
+                    style={{ width: '55px', height: '55px', marginRight: '10px' }} 
+                  />
                   Weather
                 </Button>
               </Grid>
+
               <Grid item xs={10} sm={6}>
-                <Button variant="contained" fullWidth sx={{ height: '150px', backgroundColor: '#FF5252', color: 'white', '&:hover': { backgroundColor: '#E53935' } }} onClick={() => handleCategoryClick('ai_chat')}>
-                  AI Chat 
+                <Button 
+                  variant="contained" 
+                  fullWidth 
+                  sx={{ 
+                    height: '150px', 
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+                    color: 'black', 
+                    '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' },
+                    fontSize: '24px',
+                    fontWeight: 'bold',
+                    borderRadius: '30px',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    backdropFilter: 'blur(10px)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px 20px',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                  }} 
+                  onClick={() => handleCategoryClick('ai_chat')}
+                >
+                  <img 
+                    src={aiIcon}  
+                    alt="AI Support Icon" 
+                    style={{ width: '55px', height: '55px', marginRight: '10px' }} 
+                  />
+                  AI Emotional Support
                 </Button>
               </Grid>
             </Grid>
@@ -222,22 +454,19 @@ function App() {
   };
 
   return (
-    <Container>
-      {/* 顶部的标题和描述 */}
-      <Grid container spacing={2} alignItems="center" justifyContent="space-between">
-        <Grid item xs={8}>
-          <Typography variant="h4" component="div" gutterBottom>
-            HavenLink
-          </Typography>
-          <Typography variant="body1">
-            A Smart City Solution for Assisting Homeless Communities
-          </Typography>
-        </Grid>
-
-      </Grid>
-
-      {renderContent()}
-    </Container>
+    <div
+      style={{
+        backgroundImage: `url(${Cloud})`,  // 背景图像
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        minHeight: '100vh',  // 设置为全屏高度
+        paddingBottom: '20px', 
+      }}
+    >
+      <Container>
+        {renderContent()}
+      </Container>
+    </div>
   );
 }
 
