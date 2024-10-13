@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { Button, Box, Typography } from '@mui/material';
 
-
-function Shelter() {
+function Shelter({ onBack }) {  // 接收 onBack 函数，用于返回主页
   const [shelters, setShelters] = useState([]);
   const [error, setError] = useState(null);
 
@@ -10,25 +10,31 @@ function Shelter() {
     const fetchShelters = async () => {
       try {
         const response = await fetch(
-          "http://localhost:6969/GetShelter?address=test"
-        ); // Replace with actual address
+          "http://localhost:6969/GetShelter?address=test"  // Replace with actual address
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setShelters(data); // Set shelters data from the response
+        setShelters(data);  // Set shelters data from the response
       } catch (error) {
-        setError(error.message); // Set error message if fetching fails
+        setError(error.message);  // Set error message if fetching fails
       }
     };
 
     fetchShelters();
-  }, []); // Empty dependency array means this effect runs once on mount
+  }, []);  // Empty dependency array means this effect runs once on mount
 
   return (
-    <div>
-      <h2>Nearby Shelters</h2>
-      {error && <p>Error: {error}</p>} {/* Display error if it occurs */}
+    <Box sx={{ textAlign: 'center', mt: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        Nearby Shelters
+      </Typography>
+
+      {/* 错误处理 */}
+      {error && <Typography color="error">Error: {error}</Typography>}
+
+      {/* 列表显示 shelters */}
       {shelters.length > 0 ? (
         <ul>
           {shelters.map((shelter, index) => (
@@ -43,9 +49,14 @@ function Shelter() {
           ))}
         </ul>
       ) : (
-        <p>No shelters found.</p>
+        <Typography>No shelters found.</Typography>
       )}
-    </div>
+
+      {/* 返回主页按钮 */}
+      <Button variant="contained" onClick={onBack} sx={{ mt: 4 }}>
+        Back to Home
+      </Button>
+    </Box>
   );
 }
 
