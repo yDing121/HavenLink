@@ -9,7 +9,8 @@ accepted_commands = {
     "getfoodbanks": "If the user is seeking food banks or pantries, select this command",
     "getmentalhealthsupport": "If the user is seeking mental health support with regards to issues like depression and addiction, select this command",
     "emergencycall": "If the user needs immediate medical attention or is in another emergency, select this command",
-    "weather": "If the user wants information on the weather, select this command."
+    "weather": "If the user wants information on the weather, select this command.",
+    "aichat": "If the user wants to have a chat, select this command."
 }
 
 template = """
