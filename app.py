@@ -97,19 +97,33 @@ def get_chat():
 #     return render_template('index.html')
 
 
-@app.route('/upload', methods=['POST'])
-def upload():
-    if 'audio_data' not in request.files:
-        return "No audio file found", 400
+# @app.route('/upload', methods=['POST'])
+# def upload():
+#     if 'audio_data' not in request.files:
+#         return "No audio file found", 400
+#
+#     audio = request.files['audio_data']
+#     audio_path = os.path.join("uploads", audio.filename)
+#     audio.save(audio_path)
+#
+#     # Call process() API with the saved audio
+#     result = process(audio_path)
+#
+#     return jsonify({'result': result})
 
-    audio = request.files['audio_data']
-    audio_path = os.path.join("uploads", audio.filename)
-    audio.save(audio_path)
 
-    # Call process() API with the saved audio
-    result = process(audio_path)
+@app.route('/uploadVoice', methods=['POST'])
+def upload_voice():
+    if 'audio' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
 
-    return jsonify({'result': result})
+    file = request.files['audio']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    file_path = os.path.join(f"{ROOT}/uploads/", "recording.wav")
+    file.save(file_path)  # Save the file to the specified directory
+    return jsonify({'message': 'File successfully uploaded'}), 200
 
 
 if __name__ == '__main__':
