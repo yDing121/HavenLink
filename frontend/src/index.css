@@ -11,3 +11,29 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.audio-wave {
+  width: 8px;
+  height: 30px;
+  background-color: #29B6F6;
+  margin: 0 4px;
+  animation: wave 1s infinite ease-in-out;
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(2);
+  }
+}
+
+.audio-wave:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.audio-wave:nth-child(3) {
+  animation-delay: 0.4s;
+}
+

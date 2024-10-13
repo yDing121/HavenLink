@@ -208,12 +208,7 @@ function App() {
           </Typography>
         </Grid>
 
-        {/* 右上角的Logo 占位符 */}
-        <Grid item xs={4} sx={{ textAlign: 'right' }}>
-          <Box sx={{ width: 100, height: 100, border: '1px solid black', display: 'inline-block' }}>
-            <Typography>Logo</Typography> {/* 这是一个占位符，等你有Logo设计好后再替换 */}
-          </Box>
-        </Grid>
+        
       </Grid>
 
       {renderContent()}
