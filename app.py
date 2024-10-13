@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request, jsonify
 import os
+from api import single_round_chat
 from api.audio_path_to_command import audio_path_to_command
+from api.weather_forecast import forecast
 from config import ROOT
 from data.database import shelter_db, food_bank_db, health_services,emergency_contacts
 from flask_cors import CORS
+from datetime import date
 
 app = Flask(__name__)
 CORS(app)
@@ -55,25 +58,77 @@ def emergency_call():
     ]
     return jsonify(emergency_contacts)
 
+@app.route('/forecast', methods=['POST'])
+def get_forecast():
+    # Get the ZIP code from the JSON request body
+    data = request.get_json()
+    zip_code = data.get('zipcode')
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+    if not zip_code:
+        return jsonify({"error": "ZIP code is required"}), 400
+
+    try:
+        # Call the forecast function with the provided ZIP code
+        text = forecast(zip_code)
+        return jsonify({"forecast": text}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+@app.route('/chat', methods=['POST'])
+def get_chat():
+    # Get the human message from the JSON request body
+    data = request.get_json()
+    human_msg = data.get('message')
+
+    if not human_msg:
+        return jsonify({"error": "Message is required"}), 400
+
+    try:
+        # Call the single_round_chat function with the provided human message
+        text = single_round_chat.single_round_chat(human_msg)
+        return jsonify({"response": text}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
 
 
-@app.route('/upload', methods=['POST'])
-def upload():
-    if 'audio_data' not in request.files:
-        return "No audio file found", 400
+# @app.route('/upload', methods=['POST'])
+# def upload():
+#     if 'audio_data' not in request.files:
+#         return "No audio file found", 400
+#
+#     audio = request.files['audio_data']
+#     audio_path = os.path.join("uploads", audio.filename)
+#     audio.save(audio_path)
+#
+#     # Call process() API with the saved audio
+#     result = process(audio_path)
+#
+#     return jsonify({'result': result})
 
-    audio = request.files['audio_data']
-    audio_path = os.path.join("uploads", audio.filename)
-    audio.save(audio_path)
 
-    # Call process() API with the saved audio
-    result = process(audio_path)
+@app.route('/uploadVoice', methods=['POST'])
+def upload_voice():
+    if 'audio' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
 
-    return jsonify({'result': result})
+    file = request.files['audio']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    file_path = os.path.join(f"{ROOT}/uploads", "recording.wav")
+    file.save(file_path)  # Save the file to the specified directory
+    # return jsonify({'message': 'File successfully uploaded'}), 200
+
+    # print(file_path)
+    text = process(file_path)
+    return jsonify({'message': text}), 200
+
 
 
 if __name__ == '__main__':

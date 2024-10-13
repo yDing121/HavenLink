@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { Box, Typography, Button } from "@mui/material";
 
-function FoodBank() {
+function FoodBank({ onBack }) {
   const [foodBanks, setFoodBanks] = useState([]);
   const [error, setError] = useState(null);
 
@@ -25,26 +26,32 @@ function FoodBank() {
   }, []); // Empty dependency array means this effect runs once on mount
 
   return (
-    <div>
-      <h2>Nearby Food Banks</h2>
-      {error && <p>Error: {error}</p>} {/* Display error if it occurs */}
+    <Box sx={{ textAlign: "center", mt: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        Nearby Food Banks
+      </Typography>
+      {error && <Typography color="error">Error: {error}</Typography>}
       {foodBanks.length > 0 ? (
-        <ul>
+        <ul style={{ listStyleType: "none", padding: 0 }}> {/* 修改 ul 样式 */}
           {foodBanks.map((foodBank, index) => (
-            <li key={index}>
-              <strong>{foodBank.name}</strong>
-              <ul>
-                <li>Address: {foodBank.address}</li>
-                <li>Distance: {foodBank.distance}</li>
-                <li>Hours: {foodBank.hours}</li>
-              </ul>
+            <li key={index} style={{ marginBottom: "20px" }}> {/* 修改 li 样式 */}
+              <Typography variant="h6" component="strong">
+                {foodBank.name}
+              </Typography>
+              <Typography>Address: {foodBank.address}</Typography>
+              <Typography>Distance: {foodBank.distance}</Typography>
+              <Typography>Hours: {foodBank.hours}</Typography>
             </li>
           ))}
         </ul>
       ) : (
-        <p>No food banks found.</p>
+        <Typography>No food banks found.</Typography>
       )}
-    </div>
+
+      <Button variant="contained" sx={{ mt: 4 }} onClick={onBack}>
+        Back to Home
+      </Button>
+    </Box>
   );
 }
 
