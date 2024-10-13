@@ -226,7 +226,7 @@ function App() {
       {/* 顶部的标题和描述 */}
       <Grid container spacing={2} alignItems="center" justifyContent="space-between">
         <Grid item xs={8}>
-          <Typography variant="h3" component="div" gutterBottom>
+          <Typography variant="h4" component="div" gutterBottom>
             HavenLink
           </Typography>
           <Typography variant="body1">
