@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, jsonify
 import os
 from api.audio_path_to_command import audio_path_to_command
+from api.weather_forecast import forecast
 from config import ROOT
 from data.database import shelter_db, food_bank_db, health_services,emergency_contacts
 from flask_cors import CORS
+from datetime import date
 
 app = Flask(__name__)
 CORS(app)
@@ -55,10 +57,25 @@ def emergency_call():
     ]
     return jsonify(emergency_contacts)
 
+@app.route('/forecast', methods=['POST'])
+def get_forecast():
+    # Get the ZIP code from the JSON request body
+    data = request.get_json()
+    zip_code = data.get('zipcode')
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+    if not zip_code:
+        return jsonify({"error": "ZIP code is required"}), 400
+
+    try:
+        # Call the forecast function with the provided ZIP code
+        text = forecast(zip_code)
+        return jsonify({"forecast": text}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
 
 
 @app.route('/upload', methods=['POST'])
