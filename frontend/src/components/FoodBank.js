@@ -72,7 +72,7 @@ function FoodBank({ onBack }) {
 
   return (
     <Box sx={{ textAlign: "center", mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
+     <Typography variant="h4" component="div" gutterBottom sx={{ fontSize: '48px', fontWeight: 'bold' }}>
         Nearby Food Banks
       </Typography>
 

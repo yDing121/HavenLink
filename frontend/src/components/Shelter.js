@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, Box, Typography } from "@mui/material";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { Button, Box, Typography } from '@mui/material';
+import { LoadScript, GoogleMap, Marker } from '@react-google-maps/api';
 
 function Shelter({ onBack }) {
   const [shelters, setShelters] = useState([]);
@@ -71,8 +71,8 @@ function Shelter({ onBack }) {
       : { lat: -34.397, lng: 150.644 }; // Use first shelter's coordinates as center
 
   return (
-    <Box sx={{ textAlign: "center", mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
+    <Box sx={{ textAlign: 'center', mt: 4 }}>
+      <Typography variant="h4" component="div" gutterBottom sx={{ fontSize: '48px', fontWeight: 'bold' }}>
         Nearby Shelters
       </Typography>
 

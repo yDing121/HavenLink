@@ -35,8 +35,8 @@ function HealthSupport({ onBack }) {
   };
 
   return (
-    <Box sx={{ textAlign: "center", mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
+    <Box sx={{ textAlign: 'center', mt: 4 }}>
+     <Typography variant="h4" component="div" gutterBottom sx={{ fontSize: '48px', fontWeight: 'bold' }}>
         Health Support
       </Typography>
 
@@ -96,3 +96,4 @@ function HealthSupport({ onBack }) {
 }
 
 export default HealthSupport;
+
