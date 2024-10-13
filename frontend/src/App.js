@@ -77,6 +77,31 @@ function App() {
         });
 
         if (response.ok) {
+          const data = await response.json();
+          const msg = data.message;
+          switch (msg){
+            case "getshelter":
+              handleCategoryClick("shelter");
+              break;
+            case "getfoodbanks":
+              handleCategoryClick("food_bank");
+              break;
+            case "getmentalhealthsupport":
+              handleCategoryClick("health_support");
+              break;
+            case "emergencycall":
+              handleCategoryClick("emergency_call");
+              break;
+            case "weather":
+              handleCategoryClick("weather");
+              break;
+            case "aichat":
+              handleCategoryClick("ai_chat");
+              break;
+            default:
+              alert("Unknown command, please retry!")
+              handleCategoryClick("");
+          }
           alert('Audio uploaded successfully');
         } else {
           alert('Failed to upload audio');
